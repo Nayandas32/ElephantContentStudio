@@ -1,17 +1,23 @@
 import customtkinter as ctk
 
-from ui.components.theme import PRIMARY,HOVER,FONT
+from ui.components.theme import (
+    PRIMARY,
+    HOVER,
+    TEXT,
+    FONT
+)
 
 
 class SidebarButton(ctk.CTkButton):
 
-    def __init__(self,parent,text,command=None):
+    def __init__(self, parent, text, command=None):
 
         super().__init__(
-
             parent,
 
             text=text,
+
+            command=command,
 
             height=42,
 
@@ -23,16 +29,43 @@ class SidebarButton(ctk.CTkButton):
 
             hover_color=HOVER,
 
-            font=(FONT,14),
+            text_color=TEXT,
 
-            command=command
+            font=(FONT, 14),
 
+            border_width=0
         )
+
+        self.is_active = False
+
+    # ===========================
+    # Active Button
+    # ===========================
 
     def activate(self):
 
-        self.configure(fg_color=PRIMARY)
+        self.is_active = True
+
+        self.configure(
+
+            fg_color=PRIMARY,
+
+            hover_color=PRIMARY
+
+        )
+
+    # ===========================
+    # Normal Button
+    # ===========================
 
     def deactivate(self):
 
-        self.configure(fg_color="transparent")
+        self.is_active = False
+
+        self.configure(
+
+            fg_color="transparent",
+
+            hover_color=HOVER
+
+        )

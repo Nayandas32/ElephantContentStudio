@@ -1,3 +1,11 @@
+"""
+Elephant Content Studio
+
+Version : v0.1.2B Commit 2
+
+File : main_window.py
+"""
+
 import customtkinter as ctk
 
 from ui.sidebar import Sidebar
@@ -17,59 +25,144 @@ class MainWindow(ctk.CTk):
 
         super().__init__()
 
+        # -------------------------
+        # Window
+        # -------------------------
+
         self.title("🐘 Elephant Content Studio")
 
         self.geometry("1400x850")
 
-        self.minsize(1200,700)
+        self.minsize(1200, 700)
 
-        self.grid_columnconfigure(1,weight=1)
+        # -------------------------
+        # Grid Layout
+        # -------------------------
 
-        self.grid_rowconfigure(0,weight=1)
+        self.grid_columnconfigure(1, weight=1)
 
-        self.sidebar = Sidebar(self)
+        self.grid_rowconfigure(0, weight=1)
 
-        self.sidebar.grid(row=0,column=0,sticky="ns")
+        # -------------------------
+        # Sidebar
+        # -------------------------
 
-        self.container = ctk.CTkFrame(self,corner_radius=0)
+        self.sidebar = Sidebar(
 
-        self.container.grid(row=0,column=1,sticky="nsew")
+            self,
 
-        self.container.grid_rowconfigure(0,weight=1)
+            self.show_page
 
-        self.container.grid_columnconfigure(0,weight=1)
+        )
 
-        self.pages={
+        self.sidebar.grid(
 
-            "dashboard":Dashboard,
+            row=0,
 
-            "downloader":DownloaderPage,
+            column=0,
 
-            "uploader":UploaderPage,
+            sticky="ns"
 
-            "scheduler":SchedulerPage,
+        )
 
-            "metadata":MetadataPage,
+        # -------------------------
+        # Main Container
+        # -------------------------
 
-            "analytics":AnalyticsPage,
+        self.container = ctk.CTkFrame(
 
-            "settings":SettingsPage
+            self,
+
+            corner_radius=0
+
+        )
+
+        self.container.grid(
+
+            row=0,
+
+            column=1,
+
+            sticky="nsew"
+
+        )
+
+        self.container.grid_rowconfigure(
+
+            0,
+
+            weight=1
+
+        )
+
+        self.container.grid_columnconfigure(
+
+            0,
+
+            weight=1
+
+        )
+
+        # -------------------------
+        # Pages
+        # -------------------------
+
+        self.pages = {
+
+            "dashboard": Dashboard,
+
+            "downloader": DownloaderPage,
+
+            "uploader": UploaderPage,
+
+            "scheduler": SchedulerPage,
+
+            "metadata": MetadataPage,
+
+            "analytics": AnalyticsPage,
+
+            "settings": SettingsPage
 
         }
 
-        self.current_page=None
+        self.current_page = None
+
+        # Default Page
 
         self.show_page("dashboard")
 
+    # ===================================================
 
-    def show_page(self,page_name):
+    def show_page(
 
-        if self.current_page:
+        self,
+
+        page_name
+
+    ):
+
+        if self.current_page is not None:
 
             self.current_page.destroy()
 
-        page=self.pages[page_name](self.container)
+        page_class = self.pages.get(page_name)
 
-        page.grid(row=0,column=0,sticky="nsew")
+        if page_class is None:
 
-        self.current_page=page
+            return
+
+        self.current_page = page_class(
+
+            self.container
+
+        )
+
+        self.current_page.grid(
+
+            row=0,
+
+            column=0,
+
+            sticky="nsew"
+
+        )
