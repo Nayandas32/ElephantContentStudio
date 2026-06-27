@@ -1,0 +1,29 @@
+# ui/components/theme.py
+
+PRIMARY = "#2563EB"
+
+SUCCESS = "#22C55E"
+
+WARNING = "#F59E0B"
+
+DANGER = "#EF4444"
+
+BACKGROUND = "#18181B"
+
+SIDEBAR = "#202124"
+
+CARD = "#2B2D31"
+
+BORDER = "#3A3D42"
+
+TEXT = "#FFFFFF"
+
+TEXT_SECONDARY = "#A1A1AA"
+
+HEADER = "#202124"
+
+STATUS = "#202124"
+
+HOVER = "#2F3136"
+
+FONT = "Segoe UI"
