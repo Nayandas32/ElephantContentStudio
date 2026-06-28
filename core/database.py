@@ -1,164 +1,246 @@
 import sqlite3
-from pathlib import Path
 
 from config.app_config import DATABASE_PATH
-from core.logger import Logger
 
 
 class DatabaseManager:
 
     def __init__(self):
 
-        self.logger = Logger.get_logger()
+        self.conn = sqlite3.connect(
+            DATABASE_PATH
+        )
 
-        db_path = Path(DATABASE_PATH)
-
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-
-        self.connection = sqlite3.connect(db_path)
-
-        self.cursor = self.connection.cursor()
-
-        self.logger.info("Database connected.")
+        self.cursor = self.conn.cursor()
 
         self.create_tables()
 
-    # --------------------------------------------------
+    # ==================================================
 
     def create_tables(self):
 
-        self.cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS projects(
+        self.cursor.execute("""
 
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS projects (
 
-                name TEXT NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-                created_at TEXT,
+            name TEXT NOT NULL,
 
-                description TEXT
+            description TEXT,
 
-            )
-            """
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
         )
 
-        self.connection.commit()
+        """)
 
-        self.logger.info("Database tables verified.")
+        self.conn.commit()
 
-    # --------------------------------------------------
+    # ==================================================
 
-    def execute(self, query, params=()):
+    def create_project(
 
-        self.cursor.execute(query, params)
+        self,
 
-        self.connection.commit()
+        name,
 
-        return self.cursor
+        description=""
 
-    # --------------------------------------------------
-    # Project Manager
-    # --------------------------------------------------
-
-    def create_project(self, name, description=""):
+    ):
 
         self.cursor.execute(
+
             """
-            INSERT INTO projects(
+
+            INSERT INTO projects
+
+            (
+
                 name,
-                created_at,
+
                 description
+
             )
-            VALUES(
+
+            VALUES
+
+            (
+
                 ?,
-                datetime('now'),
+
                 ?
+
             )
+
             """,
-            (name, description),
+
+            (
+
+                name,
+
+                description
+
+            )
+
         )
 
-        self.connection.commit()
+        self.conn.commit()
 
-        self.logger.info(f"Project created: {name}")
-
-    # --------------------------------------------------
+    # ==================================================
 
     def get_projects(self):
 
         self.cursor.execute(
+
             """
+
             SELECT
+
                 id,
+
                 name,
-                created_at,
-                description
+
+                description,
+
+                created_at
+
             FROM projects
+
             ORDER BY id DESC
+
             """
+
         )
 
         return self.cursor.fetchall()
 
-    # --------------------------------------------------
+    # ==================================================
 
-    def get_project(self, project_id):
+    def get_project(
+
+        self,
+
+        project_id
+
+    ):
 
         self.cursor.execute(
+
             """
-            SELECT
-                id,
-                name,
-                created_at,
-                description
+
+            SELECT *
+
             FROM projects
-            WHERE id = ?
+
+            WHERE id=?
+
             """,
-            (project_id,),
+
+            (
+
+                project_id,
+
+            )
+
         )
 
         return self.cursor.fetchone()
 
-    # --------------------------------------------------
+    # ==================================================
 
-    def update_project(self, project_id, name, description=""):
+    def update_project(
+
+        self,
+
+        project_id,
+
+        name,
+
+        description
+
+    ):
 
         self.cursor.execute(
+
             """
+
             UPDATE projects
+
             SET
-                name = ?,
-                description = ?
-            WHERE id = ?
+
+                name=?,
+
+                description=?
+
+            WHERE id=?
+
             """,
-            (name, description, project_id),
+
+            (
+
+                name,
+
+                description,
+
+                project_id
+
+            )
+
         )
 
-        self.connection.commit()
+        self.conn.commit()
 
-        self.logger.info(f"Project updated: {project_id}")
+    # ==================================================
 
-    # --------------------------------------------------
+    def delete_project(
 
-    def delete_project(self, project_id):
+        self,
+
+        project_id
+
+    ):
 
         self.cursor.execute(
+
             """
+
             DELETE FROM projects
-            WHERE id = ?
+
+            WHERE id=?
+
             """,
-            (project_id,),
+
+            (
+
+                project_id,
+
+            )
+
         )
 
-        self.connection.commit()
+        self.conn.commit()
 
-        self.logger.info(f"Project deleted: {project_id}")
+    # ==================================================
 
-    # --------------------------------------------------
+    def get_project_count(self):
+
+        self.cursor.execute(
+
+            """
+
+            SELECT COUNT(*)
+
+            FROM projects
+
+            """
+
+        )
+
+        return self.cursor.fetchone()[0]
+
+    # ==================================================
 
     def close(self):
 
-        self.connection.close()
-
-        self.logger.info("Database closed.")
+        self.conn.close()
