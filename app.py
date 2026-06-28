@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+from core.database import DatabaseManager
 from ui.main_window import MainWindow
 
 from core.logger import Logger
@@ -13,6 +13,7 @@ def main():
     logger.info("=====================================")
     logger.info("Elephant Content Studio Starting...")
     logger.info("=====================================")
+    db = DatabaseManager()
 
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
@@ -22,6 +23,7 @@ def main():
     logger.info("UI Loaded Successfully.")
 
     app.mainloop()
+    db.close()
 
     logger.info("Application Closed.")
 
