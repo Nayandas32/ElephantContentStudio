@@ -23,13 +23,9 @@ class Dashboard(ctk.CTkFrame):
 
     def build(self):
 
-        # -----------------------------
-        # Title
-        # -----------------------------
-
         title = ctk.CTkLabel(
             self,
-            text="Dashboard",
+            text="Project Dashboard",
             font=(FONT, 30, "bold")
         )
 
@@ -38,10 +34,6 @@ class Dashboard(ctk.CTkFrame):
             padx=25,
             pady=(20, 10)
         )
-
-        # -----------------------------
-        # Statistics
-        # -----------------------------
 
         stats_frame = ctk.CTkFrame(
             self,
@@ -78,27 +70,17 @@ class Dashboard(ctk.CTkFrame):
 
             card.pack_propagate(False)
 
-            lbl = ctk.CTkLabel(
+            ctk.CTkLabel(
                 card,
                 text=title_text,
                 font=(FONT, 16, "bold")
-            )
+            ).pack(pady=(18, 5))
 
-            lbl.pack(
-                pady=(18, 5)
-            )
-
-            value = ctk.CTkLabel(
+            ctk.CTkLabel(
                 card,
                 text=value_text,
                 font=(FONT, 30)
-            )
-
-            value.pack()
-
-        # -----------------------------
-        # Project Section
-        # -----------------------------
+            ).pack()
 
         project_card = Card(self)
 
@@ -120,30 +102,30 @@ class Dashboard(ctk.CTkFrame):
             pady=(20, 10)
         )
 
-        lbl = ctk.CTkLabel(
+        ctk.CTkLabel(
             header,
             text="Recent Projects",
             font=(FONT, 22, "bold")
-        )
+        ).pack(side="left")
 
-        lbl.pack(
-            side="left"
-        )
-
-        new_btn = ctk.CTkButton(
+        ctk.CTkButton(
             header,
             text="+ New Project",
             width=160,
             command=self.new_project
+        ).pack(side="right")
+
+        hint = ctk.CTkLabel(
+            project_card,
+            text="Open a project to start downloading, scheduling and uploading videos.",
+            font=(FONT, 13)
         )
 
-        new_btn.pack(
-            side="right"
+        hint.pack(
+            anchor="w",
+            padx=20,
+            pady=(0, 10)
         )
-
-        # -----------------------------
-        # Scrollable Project List
-        # -----------------------------
 
         self.project_list = ctk.CTkScrollableFrame(
             project_card
@@ -175,13 +157,11 @@ class Dashboard(ctk.CTkFrame):
         # Title
         # -----------------------------
 
-        title = ctk.CTkLabel(
+        ctk.CTkLabel(
             win,
             text="Create New Project",
             font=(FONT, 22, "bold")
-        )
-
-        title.pack(
+        ).pack(
             pady=(20, 20)
         )
 
@@ -189,18 +169,19 @@ class Dashboard(ctk.CTkFrame):
         # Project Name
         # -----------------------------
 
-        name_label = ctk.CTkLabel(
+        ctk.CTkLabel(
             win,
             text="Project Name",
             font=(FONT, 15)
+        ).pack(
+            anchor="w",
+            padx=30
         )
-
-        name_label.pack(anchor="w", padx=30)
 
         name_entry = ctk.CTkEntry(
             win,
             width=360,
-            placeholder_text="Example: Gopal Bhar Season 1"
+            placeholder_text="Example: Cartoon Channel"
         )
 
         name_entry.pack(
@@ -212,13 +193,14 @@ class Dashboard(ctk.CTkFrame):
         # Description
         # -----------------------------
 
-        desc_label = ctk.CTkLabel(
+        ctk.CTkLabel(
             win,
             text="Description",
             font=(FONT, 15)
+        ).pack(
+            anchor="w",
+            padx=30
         )
-
-        desc_label.pack(anchor="w", padx=30)
 
         desc_entry = ctk.CTkTextbox(
             win,
@@ -240,21 +222,22 @@ class Dashboard(ctk.CTkFrame):
             fg_color="transparent"
         )
 
-        button_frame.pack(fill="x", padx=30)
+        button_frame.pack(
+            fill="x",
+            padx=30
+        )
 
-        cancel_btn = ctk.CTkButton(
+        ctk.CTkButton(
             button_frame,
             text="Cancel",
             width=120,
             fg_color="gray40",
             command=win.destroy
-        )
-
-        cancel_btn.pack(
+        ).pack(
             side="left"
         )
 
-        create_btn = ctk.CTkButton(
+        ctk.CTkButton(
             button_frame,
             text="Create Project",
             width=160,
@@ -263,9 +246,7 @@ class Dashboard(ctk.CTkFrame):
                 name_entry.get(),
                 desc_entry.get("1.0", "end").strip()
             )
-        )
-
-        create_btn.pack(
+        ).pack(
             side="right"
         )
             # ==================================================
@@ -325,19 +306,17 @@ class Dashboard(ctk.CTkFrame):
 
         projects = self.db.get_projects()
 
-        if len(projects) == 0:
+        if not projects:
 
-            empty = ctk.CTkLabel(
+            ctk.CTkLabel(
 
                 self.project_list,
 
                 text="No project created yet.",
 
-                font=(FONT,18)
+                font=(FONT, 18)
 
-            )
-
-            empty.pack(
+            ).pack(
                 pady=40
             )
 
@@ -369,10 +348,10 @@ class Dashboard(ctk.CTkFrame):
 
             info.pack(
                 side="left",
-                padx=15,
-                pady=10,
+                fill="both",
                 expand=True,
-                fill="both"
+                padx=15,
+                pady=10
             )
 
             ctk.CTkLabel(
@@ -381,7 +360,7 @@ class Dashboard(ctk.CTkFrame):
 
                 text=project_name,
 
-                font=(FONT,18,"bold")
+                font=(FONT, 18, "bold")
 
             ).pack(
                 anchor="w"
@@ -393,10 +372,30 @@ class Dashboard(ctk.CTkFrame):
 
                 text=f"Created : {created_at}",
 
-                font=(FONT,12)
+                font=(FONT, 12)
 
             ).pack(
                 anchor="w"
+            )
+
+            open_btn = ctk.CTkButton(
+
+                row,
+
+                text="Open",
+
+                width=90,
+
+                command=lambda p=project: self.open_project(p)
+
+            )
+
+            open_btn.pack(
+
+                side="right",
+
+                padx=10
+
             )
 
             delete_btn = ctk.CTkButton(
@@ -416,29 +415,24 @@ class Dashboard(ctk.CTkFrame):
             )
 
             delete_btn.pack(
-                side="right",
-                padx=15
-            )
 
-    # ==================================================
+                side="right",
+
+                padx=10
+
+            )
+                # ==================================================
     # Delete Project
     # ==================================================
 
-    def delete_project(
-        self,
-        project_id
-    ):
+    def delete_project(self, project_id):
 
         answer = messagebox.askyesno(
-
             "Delete Project",
-
             "Are you sure you want to delete this project?"
-
         )
 
         if not answer:
-
             return
 
         try:
@@ -447,12 +441,30 @@ class Dashboard(ctk.CTkFrame):
 
             self.load_projects()
 
+            messagebox.showinfo(
+                "Deleted",
+                "Project deleted successfully."
+            )
+
         except Exception as e:
 
             messagebox.showerror(
-
                 "Error",
-
                 str(e)
-
             )
+
+    # ==================================================
+    # Open Project
+    # ==================================================
+
+    def open_project(self, project):
+
+        from core.current_project import set_project
+
+        set_project(project)
+
+        messagebox.showinfo(
+            "Project Opened",
+            f"Current Project:\n\n{project[1]}"
+        )
+
