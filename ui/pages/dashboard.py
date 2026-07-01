@@ -458,13 +458,17 @@ class Dashboard(ctk.CTkFrame):
     # ==================================================
 
     def open_project(self, project):
+     print("OPEN PROJECT CLICKED")
+     print(project)
 
-        from core.current_project import set_project
+     from core.current_project import set_project, get_project
 
-        set_project(project)
+     set_project(project)
+ 
+     print("SET =", get_project())
 
-        messagebox.showinfo(
-            "Project Opened",
-            f"Current Project:\n\n{project[1]}"
-        )
+     messagebox.showinfo(
+        "Project Opened",
+        f"Current Project:\n\n{project[1]}"
+     )
 
